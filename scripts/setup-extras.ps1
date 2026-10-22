@@ -255,15 +255,11 @@ $resLively = 'skip'
 try {
   Log 'LIVELY WALLPAPER: mengoptimalkan DWM 60Hz & memasang Lively Wallpaper v2.2.1.0 Anti-Stuck RDP...'
   # 1. Buka kebijakan RDP Wallpaper & Desktop Composition 60 FPS agar WorkerW Lively Wallpaper tidak diblokir/stuck di RDP
-  foreach ($tsPath in @(
-    'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services',
-    'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp'
-  )) {
-    New-Item -Path $tsPath -Force -ErrorAction SilentlyContinue | Out-Null
-    Set-ItemProperty -Path $tsPath -Name 'fDisableWallpaper' -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue
-    Set-ItemProperty -Path $tsPath -Name 'fNoFontSmoothing' -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue
-    Set-ItemProperty -Path $tsPath -Name 'DWMFRAMEINTERVAL' -Value 15 -Type DWord -Force -ErrorAction SilentlyContinue
-  }
+  $tsPolPath = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
+  if (-not (Test-Path $tsPolPath)) { New-Item -Path $tsPolPath -Force -ErrorAction SilentlyContinue | Out-Null }
+  Set-ItemProperty -Path $tsPolPath -Name 'fDisableWallpaper' -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue
+  Set-ItemProperty -Path $tsPolPath -Name 'fNoFontSmoothing' -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue
+  Set-ItemProperty -Path $tsPolPath -Name 'DWMFRAMEINTERVAL' -Value 15 -Type DWord -Force -ErrorAction SilentlyContinue
   Set-RegBoth 'Software\Microsoft\Windows\DWM' 'Composition' 1 'DWord' | Out-Null
   Set-RegBoth 'Software\Microsoft\Windows\DWM' 'CompositionPolicy' 2 'DWord' | Out-Null
 
